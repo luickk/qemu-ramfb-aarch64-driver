@@ -1,1 +1,1 @@
-gcc -Tlinker.ld -Iinclude/ boot.s serial.c qemu_dma.c kernel.c -o build/kernel -nostdlib -g
+gcc -Tlinker.ld -Iinclude/ boot.s serial.c qemu_dma.c fb.c kernel.c -o build/kernel -nostdlib -g

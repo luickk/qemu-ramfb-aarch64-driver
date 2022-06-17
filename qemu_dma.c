@@ -80,12 +80,12 @@ static void qemu_cfg_read_entry(void *buf, int e, int len) {
     qemu_cfg_dma_transfer(buf, len, control);
 }
 
-static void qemu_cfg_write_entry(void *buf, uint32_t e, uint32_t len) {
+void qemu_cfg_write_entry(void *buf, uint32_t e, uint32_t len) {
     uint32_t control = (e << 16) | QEMU_CFG_DMA_CTL_SELECT | QEMU_CFG_DMA_CTL_WRITE;
     qemu_cfg_dma_transfer(buf, len, control);
 }
 
-static int qemu_cfg_find_file() {
+int qemu_cfg_find_file() {
     uint32_t count, e, select;
     qemu_cfg_read_entry(&count, QEMU_CFG_FILE_DIR, sizeof(count));
     count = __builtin_bswap32(count);
@@ -108,22 +108,4 @@ int check_fw_cfg_dma() {
             return 1;
         }
     }    return 0;
-}
-
-int ramfb_setup_c(uint64_t heap_start) {
-    uint32_t select = qemu_cfg_find_file();
-
-    if (select == 0) {
-        return 1;
-    }
-
-    struct QemuRAMFBCfg cfg = {
-        .addr   = __builtin_bswap64(heap_start),
-        .fourcc = __builtin_bswap32(DRM_FORMAT_XRGB8888),
-        .flags  = __builtin_bswap32(0),
-        .width  = __builtin_bswap32(FRAMEBUFFER_WIDTH),
-        .height = __builtin_bswap32(FRAMEBUFFER_HEIGHT),
-        .stride = __builtin_bswap32(FRAMEBUFFER_STRIDE),
-    };
-    qemu_cfg_write_entry(&cfg, select, sizeof(cfg));
 }
