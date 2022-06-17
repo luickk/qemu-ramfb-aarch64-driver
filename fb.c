@@ -28,8 +28,8 @@ int ramfb_setup_c(uint64_t fb) {
     qemu_cfg_write_entry(&cfg, select, sizeof(cfg));
 }
 
-void write_pixel_packed(uint64_t fb_addr, uint16_t x, uint16_t y, uint32_t stride, uint8_t pixel[4]) {
-    void *dest_far = (void*)(fb_addr + ((y * stride) + x));
+void write_pixel_packed(uint64_t fb_addr, uint16_t x, uint16_t y, uint32_t stride, uint32_t bpp, uint8_t pixel[4]) {
+    void *dest_far = (void*)(fb_addr + ((y * stride) + (x * bpp)));
 
     memcpy_(dest_far, pixel, 4);
 }

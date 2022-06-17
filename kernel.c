@@ -24,10 +24,11 @@ void kernel_main(void) {
   kprint(uitoa(str, heap_start, 10));
 
   // bright red
-  uint8_t pixel[4] = {0, 255, 64, 0};
+  uint8_t pixel[4] = {0, 100, 100, 100};
+  
   for (int i = 0; i < FRAMEBUFFER_WIDTH; i++) {
     for (int j = 0; j < FRAMEBUFFER_HEIGHT; j++) {
-      write_pixel_packed(heap_start, i, j, FRAMEBUFFER_STRIDE, pixel);
+      write_pixel_packed(heap_start, i, j, FRAMEBUFFER_STRIDE, FRAMEBUFFER_BPP, pixel);
     }
   }
 
