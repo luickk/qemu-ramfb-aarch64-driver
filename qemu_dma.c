@@ -99,21 +99,23 @@ static int qemu_cfg_find_file() {
     return select;
 }
 
-void check_fw_cfg_avail() {
+int check_fw_cfg_dma() {
     mmio_write16(BASE_ADDR_SELECTOR, 0x0000);
+    union FwCfgSigRead cfg_sig_read;
     cfg_sig_read.theInt = *((volatile uint32_t*)BASE_ADDR_DATA);
     if (cfg_sig_read.bytes[0] == 'Q' && cfg_sig_read.bytes[1] == 'E' && cfg_sig_read.bytes[2] == 'M' && cfg_sig_read.bytes[3] == 'U') {
-        kprint("found cfg \n");
         if (mmio_read_bsw64(BASE_ADDR_ADDR) == 0x51454d5520434647) {
-            kprint("guest dma interface enabled \n");
+            return 1;
         }
-        return;
-    }
-    kprint("did not find cfg \n");
+    }    return 0;
 }
 
-void ramfb_setup_c(uint64_t heap_start) {
+int ramfb_setup_c(uint64_t heap_start) {
     uint32_t select = qemu_cfg_find_file();
+
+    if (select == 0) {
+        return 1;
+    }
 
     struct QemuRAMFBCfg cfg = {
         .addr   = __builtin_bswap64(heap_start),
@@ -123,17 +125,5 @@ void ramfb_setup_c(uint64_t heap_start) {
         .height = __builtin_bswap32(FRAMEBUFFER_HEIGHT),
         .stride = __builtin_bswap32(FRAMEBUFFER_STRIDE),
     };
-    qemu_cfg_write_entry(&cfg, select, sizeof(cfg));
-}
-
-void ramfb_cfg_write_workaround(uint32_t select) {
-	struct QemuRAMFBCfg cfg = {
-		.addr   = __builtin_bswap64(0x4000),
-		.fourcc = __builtin_bswap32(DRM_FORMAT_XRGB8888),
-		.flags  = __builtin_bswap32(0),
-		.width  = __builtin_bswap32(FRAMEBUFFER_WIDTH),
-		.height = __builtin_bswap32(FRAMEBUFFER_HEIGHT),
-		.stride = __builtin_bswap32(FRAMEBUFFER_STRIDE),
-	};
     qemu_cfg_write_entry(&cfg, select, sizeof(cfg));
 }

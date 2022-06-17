@@ -10,11 +10,11 @@
                                  ((uint32_t)(c) << 16) | ((uint32_t)(d) << 24))
 
 
-#define QEMU_CFG_FILE_DIR               0x19
-
 #define DRM_FORMAT_RGB565       fourcc_code('R', 'G', '1', '6') /* [15:0] R:G:B 5:6:5 little endian */
 #define DRM_FORMAT_RGB888       fourcc_code('R', 'G', '2', '4') /* [23:0] R:G:B little endian */
 #define DRM_FORMAT_XRGB8888     fourcc_code('X', 'R', '2', '4') /* [31:0] x:R:G:B 8:8:8:8 little endian */
+
+#define QEMU_CFG_FILE_DIR               0x19
 
 // QEMU_CFG_DMA_CONTROL bits
 #define QEMU_CFG_DMA_CTL_ERROR   0x01
@@ -24,8 +24,6 @@
 #define QEMU_CFG_DMA_CTL_WRITE   0x10
 
 #define BASE_ADDR 0x09020000
-
-
 #define BASE_ADDR_SELECTOR 0x9020008
 #define BASE_ADDR_DATA 0x09020000
 #define BASE_ADDR_ADDR 0x9020010
@@ -33,7 +31,7 @@
 union FwCfgSigRead {
     uint32_t theInt;
     char bytes[sizeof(int)];
-} cfg_sig_read;
+};
 
 typedef struct {
     uint32_t control;
@@ -57,6 +55,6 @@ struct QemuCfgFile {
     char name[56];
 };
 
-void check_fw_cfg_avail();
-void ramfb_setup_c(uint64_t heap_start);
+int check_fw_cfg_dma();
+int ramfb_setup_c(uint64_t heap_start);
 void kprint(uint8_t *print_string);
