@@ -33,6 +33,12 @@ void reverse(char str[], int length) {
     }
 }
 
+void kprint_ui(uint64_t inp) {
+    uint8_t str[20];
+    uitoa(str, inp, 10);
+    kprint(str);
+}
+
 uint8_t* uitoa(uint8_t *str, uint64_t num, int base) {
     int i = 0;
  

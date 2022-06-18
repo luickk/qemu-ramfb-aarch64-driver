@@ -38,10 +38,7 @@ void kernel_main(void) {
 
   kprint("setup ramfb successfull\n");
 
-  // uint8_t str[20] = {};
-  // kprint(uitoa(str, heap_start, 10));
-
-  uint8_t pixel[3] = {255, 255, 255};
+  // uint8_t pixel[3] = {255, 255, 255};
 
   // for (int i = 0; i < fb.fb_width; i++) {
   //   for (int j = 0; j < fb.fb_height; j++) {
@@ -49,7 +46,7 @@ void kernel_main(void) {
   //   }
   // }
 
-  draw_rgb256_map(&fb, 100, 100, (uint8_t*)&img[0]);
+  draw_rgb256_map(&fb, 500, 500, (uint8_t*)&img[0]);
 
   while (1);
 }

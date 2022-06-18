@@ -21,3 +21,8 @@ In the dtb the fw_cfg's address can be found and used as base address for this d
 
 The ramfb cannot be configure thorugh the fw_cfg directly but only through the guest side dma interface which can be accessed through the addr register. This addr register is 8 bytes wide and at the fw_cfg base address + 16 (as stated in Qemu fw_cfg/ guest side dma docs).
 
+# Demonstration
+
+An example of the bare metal kernel displaying a scaled up pixel art via qemu ramfb.
+
+![demonstration](media/example.jpg)

@@ -1,5 +1,6 @@
 #include "fb.h"
 #include "qemu_dma.h"
+#include "serial.h"
 
 void memcpy_(void *dest, void *src, uint64_t n)
 {
@@ -40,18 +41,18 @@ void write_rgb256_pixel(fb_info *fb, uint16_t x, uint16_t y, uint8_t pixel[3]) {
 
 void draw_rgb256_map(fb_info *fb, uint32_t x_res, uint32_t y_res, uint8_t *rgb_map) {
 
-    uint8_t map_bpp = 3;
+    uint8_t map_bpp = 4;
     uint64_t map_stride = x_res * map_bpp;
     uint64_t map_size = map_stride*y_res;
 
     uint64_t i = 0;
-    for (int map_i = 0; map_i < map_size; map_i += 3) {
-        if (map_i%map_stride == 0) {
-            i += fb->fb_stride;
+    for (int map_i = 0; map_i < map_size; map_i += 4) {
+        if (map_i%map_stride == 0 && map_i != 0) {
+            i += fb->fb_stride-map_stride;
         }
         // 1 compensates for alignement (xRGB)
-        memcpy_((void*)fb->fb_addr + i + 1, &rgb_map[map_i], 4);
+        memcpy_((void*)fb->fb_addr + i, &rgb_map[map_i], 4);
 
-        i += 3;
+        i += 4;
     }
 }
