@@ -42,7 +42,6 @@ struct QemuCfgFile {
 };
 
 int check_fw_cfg_dma();
-int ramfb_setup_c(uint64_t heap_start);
 void kprint(uint8_t *print_string);
 
 void qemu_cfg_write_entry(void *buf, uint32_t e, uint32_t len);

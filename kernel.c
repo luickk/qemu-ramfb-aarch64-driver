@@ -1,6 +1,7 @@
 #include "serial.h"
 #include "fb.h"
 #include "qemu_dma.h"
+#include "image_rgb_map.h"
 
 void kernel_main(void) {
   extern uint64_t _stack_top;
@@ -13,24 +14,42 @@ void kernel_main(void) {
     return;
   }
   
+  uint32_t fb_width = 1024;
+  uint32_t fb_height = 768;
+  uint32_t fb_bpp = 4;
+  uint32_t fb_stride = fb_bpp * fb_width;
+
+  fb_info fb = {
+    .fb_addr = heap_start,
+    .fb_width = fb_width,
+    .fb_height = fb_height,
+    .fb_bpp = fb_bpp,
+
+    .fb_stride = fb_stride,
+    .fb_size = fb_stride * fb_height,
+  };
+
   /* since this is just a "proof of concept", the complete "heap" serves as framebuffer... */
-  if (ramfb_setup_c(heap_start) != 0) {
+  if (ramfb_setup(&fb) != 0) {
     kprint("error setting up ramfb \n");
   }
   
+
+
   kprint("setup ramfb successfull\n");
 
-  uint8_t str[20] = {};
-  kprint(uitoa(str, heap_start, 10));
+  // uint8_t str[20] = {};
+  // kprint(uitoa(str, heap_start, 10));
 
-  // bright red
-  uint8_t pixel[4] = {0, 100, 100, 100};
-  
-  for (int i = 0; i < FRAMEBUFFER_WIDTH; i++) {
-    for (int j = 0; j < FRAMEBUFFER_HEIGHT; j++) {
-      write_pixel_packed(heap_start, i, j, FRAMEBUFFER_STRIDE, FRAMEBUFFER_BPP, pixel);
-    }
-  }
+  uint8_t pixel[3] = {255, 255, 255};
+
+  // for (int i = 0; i < fb.fb_width; i++) {
+  //   for (int j = 0; j < fb.fb_height; j++) {
+  //     write_rgb256_pixel(&fb, i, j, pixel);
+  //   }
+  // }
+
+  draw_rgb256_map(&fb, 100, 100, (uint8_t*)&img[0]);
 
   while (1);
 }
