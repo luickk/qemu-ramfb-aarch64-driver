@@ -25,4 +25,4 @@ The ramfb cannot be configure thorugh the fw_cfg directly but only through the g
 
 An example of the bare metal kernel displaying a scaled up pixel art via qemu ramfb.
 
-![demonstration](media/example.jpg)
+![demonstration](media/example.png)
